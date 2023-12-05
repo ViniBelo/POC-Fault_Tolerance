@@ -16,7 +16,7 @@ public class ClientController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Object getOrder() {
+    public String getOrder() {
         return clientService.getOrder();
     }
 }
