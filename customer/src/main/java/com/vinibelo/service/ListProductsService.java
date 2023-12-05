@@ -1,6 +1,5 @@
 package com.vinibelo.service;
 
-import com.vinibelo.model.Order;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;

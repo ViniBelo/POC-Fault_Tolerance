@@ -4,13 +4,13 @@ import java.time.Instant;
 import java.util.List;
 
 public class Order {
-    private String id;
-    private String customerId;
+    private Long id;
+    private Long customerId;
     private List<String> products;
     private Instant createdAt;
     private Instant updatedAt;
 
-    public Order(String id, String customerId, List<String> products, Instant createdAt, Instant updatedAt) {
+    public Order(Long id, Long customerId, List<String> products, Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.customerId = customerId;
         this.products = products;
@@ -18,11 +18,11 @@ public class Order {
         this.updatedAt = updatedAt;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public String getCustomerId() {
+    public Long getCustomerId() {
         return customerId;
     }
 

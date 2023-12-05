@@ -1,27 +1,20 @@
 package com.vinibelo.model;
 
-import jakarta.json.bind.annotation.JsonbProperty;
-
 import java.time.Instant;
 import java.util.List;
 
 public class Order {
-    @JsonbProperty("id")
-    private String id;
-    @JsonbProperty("customerId")
-    private String customerId;
-    @JsonbProperty("products")
+    private Long id;
+    private Long customerId;
     private List<String> products;
-    @JsonbProperty("createdAt")
     private Instant createdAt;
-    @JsonbProperty("updatedAt")
     private Instant updatedAt;
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public void setCustomerId(String customerId) {
+    public void setCustomerId(Long customerId) {
         this.customerId = customerId;
     }
 
@@ -37,11 +30,11 @@ public class Order {
         this.updatedAt = updatedAt;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public String getCustomerId() {
+    public Long getCustomerId() {
         return customerId;
     }
 

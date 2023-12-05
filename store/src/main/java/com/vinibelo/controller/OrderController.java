@@ -21,7 +21,7 @@ public class OrderController {
     @Path("details")
     public Response hello() {
         List<String> products = Arrays.asList("TV 42", "Smartphone Samsung");
-        var order = new Order("ohi432ioda0", "uh534i78uyh", products, Instant.now(), Instant.now());
+        var order = new Order(1L, 1L, products, Instant.now(), Instant.now());
         rateLimiter++;
         System.out.println(rateLimiter);
         if (rateLimiter % 10 == 0) {
