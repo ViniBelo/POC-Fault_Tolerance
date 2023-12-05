@@ -1,9 +1,9 @@
 package com.vinibelo.service;
 
+import io.smallrye.faulttolerance.api.RateLimit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.core.MediaType;
+import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
@@ -14,7 +14,8 @@ public class ListProductsService {
     @RestClient
     ClientService clientService;
 
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Retry(maxRetries = 1)
+    @RateLimit(value = 15, window = 10)
     public List<String> getProducts() {
         return clientService.getOrder().getProducts();
     }

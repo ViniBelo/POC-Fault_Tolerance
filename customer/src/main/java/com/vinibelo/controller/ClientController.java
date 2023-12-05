@@ -8,7 +8,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.faulttolerance.Retry;
 
 @Path("/service-a")
 public class ClientController {
@@ -17,8 +16,6 @@ public class ClientController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Retry(maxRetries = 1)
-    @RateLimit(value = 15, window = 10)
     public Response getProducts() {
         return Response.ok(listProductsService.getProducts()).build();
     }

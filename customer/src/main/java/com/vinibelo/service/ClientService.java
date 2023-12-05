@@ -10,7 +10,6 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @RegisterRestClient(baseUri = "http://localhost:8081", configKey = "com.vinibelo.service-api")
 @RegisterClientHeaders
 public interface ClientService {
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("details")
