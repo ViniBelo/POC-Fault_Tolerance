@@ -1,20 +1,18 @@
-package com.vinibelo;
+package com.vinibelo.service;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import com.vinibelo.model.Order;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 @Path("service-b")
-@RegisterRestClient(baseUri = "http://localhost:8081", configKey = "service-api")
+@RegisterRestClient(baseUri = "http://localhost:8081", configKey = "com.vinibelo.service-api")
 @RegisterClientHeaders
-@ApplicationScoped
 public interface ClientService {
 
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("details")
-    String getOrder();
+    Order getOrder();
 }

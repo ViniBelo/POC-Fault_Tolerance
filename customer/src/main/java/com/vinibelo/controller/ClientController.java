@@ -1,22 +1,25 @@
 package com.vinibelo.controller;
 
-import com.vinibelo.ClientService;
+import com.vinibelo.service.ListProductsService;
+import io.smallrye.faulttolerance.api.RateLimit;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
+import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.faulttolerance.Retry;
 
 @Path("/service-a")
 public class ClientController {
     @Inject
-    @RestClient
-    ClientService clientService;
+    ListProductsService listProductsService;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getOrder() {
-        return clientService.getOrder();
+    @Retry(maxRetries = 1)
+    @RateLimit(value = 15, window = 10)
+    public Response getProducts() {
+        return Response.ok(listProductsService.getProducts()).build();
     }
 }
