@@ -1,5 +1,6 @@
 package com.vinibelo.service;
 
+import com.vinibelo.service.connection.ClientService;
 import io.smallrye.faulttolerance.api.RateLimit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

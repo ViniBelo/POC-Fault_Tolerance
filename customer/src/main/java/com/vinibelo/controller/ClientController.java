@@ -1,7 +1,6 @@
 package com.vinibelo.controller;
 
 import com.vinibelo.service.ListProductsService;
-import io.smallrye.faulttolerance.api.RateLimit;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;

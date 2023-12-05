@@ -1,4 +1,4 @@
-package com.vinibelo.service;
+package com.vinibelo.service.connection;
 
 import com.vinibelo.model.Order;
 import jakarta.ws.rs.*;
