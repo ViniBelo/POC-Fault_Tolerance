@@ -1,28 +1,23 @@
 package com.vinibelo.service;
 
-import com.vinibelo.exception.NotFoundExceptionHandler;
-import com.vinibelo.exception.RateLimitExceptionHandler;
 import com.vinibelo.service.connection.ClientService;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterConfig;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
-import io.quarkus.logging.Log;
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryConfig;
+import io.github.resilience4j.retry.RetryRegistry;
 import io.smallrye.faulttolerance.api.RateLimitException;
-import io.vavr.CheckedRunnable;
-import io.vavr.control.Try;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotFoundException;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.logging.Logger;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
-import org.jboss.logging.Logger;
-import org.jboss.resteasy.client.exception.ResteasyWebApplicationException;
 
 @ApplicationScoped
 public class ListProductsService {
@@ -34,19 +29,29 @@ public class ListProductsService {
             .limitForPeriod(15)
             .timeoutDuration(Duration.ofMillis(100))
             .build();
+    RetryConfig retryConfig = RetryConfig.custom()
+            .maxAttempts(2)
+            .waitDuration(Duration.ofMillis(100))
+            .retryExceptions(Exception.class)
+            .build();
     RateLimiterRegistry rateLimiterRegistry = RateLimiterRegistry.of(config);
-    RateLimiter rateLimiter = rateLimiterRegistry.rateLimiter("Custom");
+    RateLimiter rateLimiter = rateLimiterRegistry.rateLimiter("Custom RateLimiter");
+    RetryRegistry retryRegistry = RetryRegistry.of(retryConfig);
+    Retry retry = retryRegistry.retry("Custom Retry");
     private static final Logger LOG = Logger.getLogger(ListProductsService.class);
 
 
     public List<String> getProducts() {
+        Supplier<List<String>> productsSupplier = Retry.decorateSupplier(
+                retry,
+                RateLimiter.decorateSupplier(
+                        rateLimiter, () -> {
+                            LOG.info("Calling store API");
+                            return callStoreApi();
+                        }
+                )
+        );
         try {
-            Supplier<List<String>> productsSupplier = RateLimiter.decorateSupplier(
-                    rateLimiter, () -> {
-                        LOG.info("Calling store API");
-                        return callStoreApi();
-                    }
-            );
             return productsSupplier.get();
         } catch (RequestNotPermitted e) {
             LOG.error("Rate limit exceeded: " + e.getMessage() + " " + e.getClass());
