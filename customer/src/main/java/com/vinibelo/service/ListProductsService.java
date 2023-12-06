@@ -39,10 +39,9 @@ public class ListProductsService {
     Retry retry = retryRegistry.retry("Custom Retry");
     private static final Logger LOG = Logger.getLogger(ListProductsService.class);
 
-
     public List<String> getProducts() {
         retry.getEventPublisher()
-                .onRetry(event -> LOG.info("Retry attempt: " + event.getName() + " " + event.getNumberOfRetryAttempts() + " time"));;
+                .onRetry(event -> LOG.info("Retry attempt: " + event.getName()));;
         Supplier<List<String>> productsSupplier = Retry.decorateSupplier(
                 retry,
                 RateLimiter.decorateSupplier(
@@ -60,8 +59,6 @@ public class ListProductsService {
         } catch (Exception e) {
             LOG.error("Bad Request: " + e.getMessage() + " " + e.getClass());
             throw new BadRequestException();
-        } finally {
-            LOG.info("Exiting getProducts()");
         }
     }
 
