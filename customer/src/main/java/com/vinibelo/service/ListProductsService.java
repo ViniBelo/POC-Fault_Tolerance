@@ -31,8 +31,7 @@ public class ListProductsService {
             .build();
     RetryConfig retryConfig = RetryConfig.custom()
             .maxAttempts(2)
-            .waitDuration(Duration.ofMillis(100))
-            .retryExceptions(Exception.class)
+            .waitDuration(Duration.ofMillis(50))
             .build();
     RateLimiterRegistry rateLimiterRegistry = RateLimiterRegistry.of(config);
     RateLimiter rateLimiter = rateLimiterRegistry.rateLimiter("Custom RateLimiter");
@@ -42,6 +41,8 @@ public class ListProductsService {
 
 
     public List<String> getProducts() {
+        retry.getEventPublisher()
+                .onRetry(event -> LOG.info("Retry attempt: " + event.getName() + " " + event.getNumberOfRetryAttempts() + " time"));;
         Supplier<List<String>> productsSupplier = Retry.decorateSupplier(
                 retry,
                 RateLimiter.decorateSupplier(
@@ -59,10 +60,12 @@ public class ListProductsService {
         } catch (Exception e) {
             LOG.error("Bad Request: " + e.getMessage() + " " + e.getClass());
             throw new BadRequestException();
+        } finally {
+            LOG.info("Exiting getProducts()");
         }
     }
 
-    public List<String> callStoreApi() {
+    private List<String> callStoreApi() {
         return clientService.getOrder().getProducts();
     }
 }
